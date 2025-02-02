@@ -1,3 +1,11 @@
+use inventario 
+go 
+
+if exists (select * from sysobjects where name = 'Piezas')
+begin
+drop table Piezas  
+end 
+
 CREATE TABLE Piezas (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     Nombre NVARCHAR(100) NOT NULL,

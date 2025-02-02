@@ -1,3 +1,10 @@
+use inventario 
+go 
+
+if exists (select * from sysobjects where name = 'DetalleVenta')
+begin
+drop table DetalleVenta  
+end 
 CREATE TABLE DetalleVenta (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     VentaId INT ,
