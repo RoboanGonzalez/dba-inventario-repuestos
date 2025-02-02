@@ -1,0 +1,6 @@
+CREATE TABLE Ventas (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Fecha DATETIME DEFAULT GETDATE(),
+    ClienteId INT,
+    Total DECIMAL(10, 2) NOT NULL
+);
