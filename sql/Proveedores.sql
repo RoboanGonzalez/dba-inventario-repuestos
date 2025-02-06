@@ -7,10 +7,10 @@ drop table Proveedores
 end 
 
 CREATE TABLE Proveedores (
-    Id INT IDENTITY(1,1) PRIMARY KEY,
-    Nombre NVARCHAR(100) NOT NULL,
-    Contacto NVARCHAR(50),
-    Telefono NVARCHAR(20),
-    Email NVARCHAR(100),
-    Direccion NVARCHAR(255)
+    Id        INT IDENTITY(1,1) PRIMARY KEY,
+    Nombre    VARCHAR(100) NOT NULL,
+    Contacto  VARCHAR(50)   ,
+    Telefono  VARCHAR(20)   ,
+    Email     VARCHAR(100)  ,
+    Direccion VARCHAR(255)
 );
