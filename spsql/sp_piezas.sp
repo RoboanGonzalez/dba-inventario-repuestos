@@ -9,20 +9,19 @@ go
 create procedure sp_piezas
 (
     @i_operacion      char(1),
-    @i_Id             INT            = null ,
+    @i_Id             INT            = 0 ,
     @i_Codigo         VARCHAR(50)    = null ,       -- Codigo unico de la pieza
     @i_Nombre         VARCHAR(100)   = null ,       -- Nombre de la pieza
     @i_Descripcion    VARCHAR(255)   = null ,       -- Descripcion detallada
     @i_Marca          VARCHAR(50)    = null ,       -- Marca del vehiculo compatible
     @i_Modelo         VARCHAR(50)    = null ,       -- Modelo del vehiculo compatible
-    @i_Anio           INT            = null ,       -- Anio del vehiculo compatible
+    @i_Anio           int            = 0, 
     @i_Motor          VARCHAR(50)    = null ,       -- Especificaciones del motor
     @i_Precio         DECIMAL(10, 2) = null ,       -- Precio de la pieza
-    @i_Stock          INT            = null ,       -- Cantidad disponible en inventario
-    @i_ProveedorId    INT            = null         -- Fecha en que la pieza ingreso al inventario
+    @i_Stock          INT            = 0    ,       -- Fecha en que la pieza ingreso al inventario
+    @i_IdProveedor    int            = 0 
 )
 as
-
 
 SELECT @i_Codigo         = UPPER(@i_Codigo     ),
        @i_Nombre         = UPPER(@i_Nombre     ),
@@ -43,17 +42,17 @@ if @i_Codigo != ''
                'DESCRIPCION'   = Descripcion ,
                'MARCA'         = Marca       ,
                'MODELO'        = Modelo      ,
-               'ANIO'          = Anio        ,
+               'ANIOAUTO'          = Anio        ,
                'MOTOR'         = Motor       ,
                'PRECIO'        = Precio      ,
                'STOCK'         = Stock       ,
-               'PROVEEDOR_ID'  = ProveedorId ,
+               'PROVEEDORID'  = isnull(ProveedorId,0) ,
                'FECHAINGRESO'  = FechaIngreso
           from Piezas
          where Codigo          = @i_Codigo
     end 
            
-if isnull(@i_Marca,'') != '' and isnull(@i_Modelo,'') != '' and isnull(@i_Anio,0) = 0 and isnull(@i_Nombre,'') = ''
+if isnull(@i_Marca,'') != '' and isnull(@i_Modelo,'') != '' and isnull(@i_Anio,0) != 0 and isnull(@i_Nombre,'') != ''
    begin 
         select 'ID'            = Id          ,
                'CODIGO'        = Codigo      ,
@@ -61,35 +60,37 @@ if isnull(@i_Marca,'') != '' and isnull(@i_Modelo,'') != '' and isnull(@i_Anio,0
                'DESCRIPCION'   = Descripcion ,
                'MARCA'         = Marca       ,
                'MODELO'        = Modelo      ,
-               'ANIO'          = Anio        ,
+               'ANIOAUTO'      = Anio        ,
                'MOTOR'         = Motor       ,
                'PRECIO'        = Precio      ,
                'STOCK'         = Stock       ,
-               'PROVEEDOR_ID'  = ProveedorId ,
+               'PROVEEDORID'  = isnull(ProveedorId,0) ,
                'FECHAINGRESO'  = FechaIngreso
           from Piezas
          where Marca           = @i_Marca
            and Modelo          = @i_Modelo
            and Anio            = @i_Anio
-           and Nombre like @i_Nombre
+           and Nombre like '%' + @i_Nombre + '%'
    end 
                      
-if isnull(@i_Nombre,'') != ''
+if isnull(@i_Nombre,'') != '' and isnull(@i_Modelo,'') = '' and isnull(@i_Anio,0) = 0 and isnull(@i_Marca,'') = ''
 begin 
+
+print 'entre'
     select 'ID'            = Id          ,
            'CODIGO'        = Codigo      ,
            'NOMBRE'        = Nombre      ,
            'DESCRIPCION'   = Descripcion ,
            'MARCA'         = Marca       ,
            'MODELO'        = Modelo      ,
-           'ANIO'          = Anio        ,
+           'ANIOAUTO'          = Anio        ,
            'MOTOR'         = Motor       ,
            'PRECIO'        = Precio      ,
            'STOCK'         = Stock       ,
-           'PROVEEDOR_ID'  = ProveedorId ,
+           'PROVEEDORID'  = isnull(ProveedorId,0) ,
            'FECHAINGRESO'  = FechaIngreso
       from Piezas
-     where Nombre like @i_Nombre
+     where Nombre like '%'+ @i_Nombre + '%'
 end 
 
 if isnull(@i_Motor,'') != '' 
@@ -100,11 +101,11 @@ begin
            'DESCRIPCION'   = Descripcion ,
            'MARCA'         = Marca       ,
            'MODELO'        = Modelo      ,
-           'ANIO'          = Anio        ,
+           'ANIOAUTO'          = Anio        ,
            'MOTOR'         = Motor       ,
            'PRECIO'        = Precio      ,
            'STOCK'         = Stock       ,
-           'PROVEEDOR_ID'  = ProveedorId ,
+           'PROVEEDORID'  = isnull(ProveedorId,0) ,
            'FECHAINGRESO'  = FechaIngreso
       from Piezas
      where Motor = @i_Motor
@@ -136,7 +137,7 @@ begin
          @i_Motor      ,
          @i_Precio     ,
          @i_Stock      ,
-         @i_ProveedorId 
+         @i_IdProveedor 
      );
 
 end -- if @i_operacion = 'I'
